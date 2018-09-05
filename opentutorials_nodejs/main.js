@@ -17,8 +17,6 @@ function templateHTML(title, list, description, control){
 
 			${control}
 
-			
-
 			<h2>${title}</h2>
 			${description}
 		</body>
@@ -105,10 +103,10 @@ var app = http.createServer(function(request,response){
 					var template = templateHTML(title, list, `
 						<form action="/update_process" method="post">
 							<div>
-								<input type="text" name="title" placeholder="title">
+								<input type="text" name="title" placeholder="title" value="${title}">
 							</div>
 							<div>
-								<textarea name="description" placeholder="description"></textarea>
+								<textarea name="description" placeholder="description">${description}</textarea>
 							</div>
 							<div>
 								<input type="submit">
