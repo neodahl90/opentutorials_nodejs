@@ -1,0 +1,123 @@
+[예제1-1]
+// http 모듈을 로드
+var http = require('http');
+
+// http 서버를 생성
+http.createServer(function(req, res){
+	// 컨텐츠 헤더
+	res.writeHead(200, {'content-type': 'text/plain'});
+	res.end('hello world!\n');
+}).listen(8124);
+
+console.log('Server running on 8124');
+
+
+
+
+
+
+[예제1-2]
+// http 모듈을 로드
+var http = require('http');
+var fs = require('fs');
+
+// http 서버를 생성
+http.createServer(function(req, res){
+
+	// helloworrld.js 를 열고 읽음
+	fs.readFile('helloworld.js', 'utf8', function(err, data){
+
+		res.writeHead(200, {'content-type': 'text/plain'});
+		if(err) 
+			res.write('Could not find or open file for reading\n');
+		else
+			// 오류가 없으면 js파일을 클라이언트에게 쓴다
+			res.write(data);
+		res.end();
+	})
+
+}).listen(8124, function() {
+	console.log('bound to port 8124');
+});
+console.log('Server running on 8124');
+
+=============================================================
+fs: File System
+
+
+
+
+[예제1-3]
+// http 모듈을 로드
+var http = require('http');
+var fs = require('fs');
+
+// 숫자를 쓴다
+function writeNumbers(res){
+	var counter = 0;
+
+	// 숫자를 증가해가면서 클라이언트에게 쓴다
+	for(var i=0; i<100; i++){
+		counter++;
+		res.write(counter.toString() + '\n');
+	}
+}
+
+// http 서버를 생성
+http.createServer(function(req, res){
+	var query = require('url').parse(req.url).query;
+	var app = require('querystring').parse(query).file + '.txt';
+
+	// 컨텐츠 헤더
+	res.writeHead(200, {'Content-Type': 'text/plain'});
+
+	// 숫자를 쓴다
+	writeNumbers(res);
+
+	//파일을 열고 내용을 읽기 위한 타이머
+	setTimeout(function(){
+
+		console.log('opening' + app);
+
+		//파일 내용을 열고 읽음
+		fs.readFile(app, 'utf8', function(err, data){
+			if(err)
+				res.write('Could not find or open file for reading\n');
+			else {
+				res.write(data);
+			}
+			//응답완료
+			res.end();
+		});
+	}, 2000);
+}).listen(8124);
+
+console.log('Server running at 8124');
+
+
+
+
+
+
+
+[예제1-4]
+
+var http = require('http');
+// 원하는 url과 필요한 경로 및 옵션
+
+var options = {
+	host: 'localhost',
+	port: 8124,
+	path: '/?file=secondary',
+	method: 'GET'
+};
+
+var processPublicTimeline = function(response) {
+	//종료되었으면 데이터를 파일에 쓴다
+	console.log('finished request');
+};
+
+for(var i =0; i < 2000; i++){
+	// 요청을 보낸 후 종료하고 연결을 닫는다
+	http.request(options, processPublicTimeline).end();
+}
